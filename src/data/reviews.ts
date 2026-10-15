@@ -1,0 +1,65 @@
+// SAMPLE DATA for the demo only. Replace with real guest reviews (e.g. copied
+// from TripAdvisor with permission) before launch. Later this comes from the API.
+import type { Review } from "@/types";
+
+export const reviews: Review[] = [
+  {
+    id: "r1",
+    name: "Sophie",
+    country: "United Kingdom",
+    rating: 5,
+    text: "Our guide made Sigiriya feel like a story rather than a climb. The village lunch afterwards was the best meal of our whole trip. Booking on WhatsApp was so easy.",
+    date: "2026-09",
+    source: "TripAdvisor",
+    tourSlug: "sigiriya-village-life",
+  },
+  {
+    id: "r2",
+    name: "Lukas",
+    country: "Germany",
+    rating: 5,
+    text: "Picking tea with the pluckers and then drinking it with that view at Labookellie was unforgettable. Comfortable car, careful driving and always on time.",
+    date: "2026-08",
+    source: "TripAdvisor",
+    tourSlug: "tea-country-nuwara-eliya",
+  },
+  {
+    id: "r3",
+    name: "Camille",
+    country: "France",
+    rating: 5,
+    text: "We felt looked after from the first message. He knew exactly when to go to the Nine Arch Bridge to see the train without the crowds.",
+    date: "2026-08",
+    source: "Google",
+    tourSlug: "ella-waterfalls",
+  },
+  {
+    id: "r4",
+    name: "Emma & Tom",
+    country: "Netherlands",
+    rating: 5,
+    text: "A private tour that felt like travelling with a friend. Kandy, the temple and the elephants in the river were all perfectly paced.",
+    date: "2026-07",
+    source: "TripAdvisor",
+    tourSlug: "kandy-temple-of-the-tooth",
+  },
+  {
+    id: "r5",
+    name: "Isabella",
+    country: "Spain",
+    rating: 5,
+    text: "Warm, honest and so knowledgeable. He changed our plan on the day when it rained and found us a beautiful waterfall instead.",
+    date: "2026-07",
+    source: "Google",
+  },
+  {
+    id: "r6",
+    name: "Daniel",
+    country: "Australia",
+    rating: 5,
+    text: "Great value for a private driver-guide. The south coast day was relaxed and Galle Fort was a highlight. Would book again without hesitation.",
+    date: "2026-06",
+    source: "TripAdvisor",
+    tourSlug: "south-coast-escape",
+  },
+];
