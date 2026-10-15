@@ -15,6 +15,10 @@
   --color-gold: #8c6b3e;
   --color-gold-light: #c9a979;
 
+  /* Official WhatsApp brand green, used only for the WhatsApp chat button. */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-dark: #1ebe5a;
+
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
 }
