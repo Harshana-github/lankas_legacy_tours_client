@@ -1,7 +1,7 @@
 // Small building blocks shared by every page.
-import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { StarIcon, WhatsAppIcon } from "@/components/icons";
+import { LocaleLink } from "@/components/locale-link";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 const buttonStyles = {
@@ -11,13 +11,13 @@ const buttonStyles = {
   outlineLight: "border border-ivory/30 text-ivory hover:border-ivory hover:bg-ivory/5",
 };
 
-type ButtonLinkProps = ComponentProps<typeof Link> & {
+type ButtonLinkProps = ComponentProps<typeof LocaleLink> & {
   variant?: keyof typeof buttonStyles;
 };
 
 export function ButtonLink({ variant = "primary", className = "", ...props }: ButtonLinkProps) {
   return (
-    <Link
+    <LocaleLink
       className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 text-sm font-semibold tracking-wide transition-colors ${buttonStyles[variant]} ${className}`}
       {...props}
     />
@@ -26,14 +26,14 @@ export function ButtonLink({ variant = "primary", className = "", ...props }: Bu
 
 type WhatsAppButtonProps = {
   message?: string;
-  label?: string;
+  label: string;
   variant?: keyof typeof buttonStyles;
   className?: string;
 };
 
 export function WhatsAppButton({
   message,
-  label = "Chat on WhatsApp",
+  label,
   variant = "primary",
   className = "",
 }: WhatsAppButtonProps) {
@@ -82,9 +82,10 @@ export function PageHeader({ eyebrow, title, intro }: { eyebrow: string; title: 
   );
 }
 
-export function Stars({ rating }: { rating: number }) {
+/** Star rating. `label` is the spoken description, e.g. "5 out of 5 stars". */
+export function Stars({ rating, label }: { rating: number; label: string }) {
   return (
-    <div className="flex gap-0.5 text-gold" role="img" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex gap-0.5 text-gold" role="img" aria-label={label}>
       {Array.from({ length: 5 }, (_, i) => (
         <StarIcon key={i} className={`size-4 ${i < rating ? "" : "opacity-25"}`} />
       ))}

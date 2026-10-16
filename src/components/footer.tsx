@@ -1,8 +1,11 @@
-import Link from "next/link";
+import { LocaleLink } from "@/components/locale-link";
 import { navLinks, site } from "@/config/site";
+import { getDictionary } from "@/i18n/dictionaries";
 import { whatsappUrl } from "@/lib/whatsapp";
 
-export function Footer() {
+export async function Footer() {
+  const t = await getDictionary();
+
   return (
     <footer className="bg-forest text-ivory/80">
       <div className="container-page grid gap-12 py-16 md:grid-cols-3">
@@ -11,28 +14,28 @@ export function Footer() {
           <p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gold-light">
             {site.tagline}
           </p>
-          <p className="mt-6 max-w-xs text-sm leading-relaxed">{site.description}</p>
+          <p className="mt-6 max-w-xs text-sm leading-relaxed">{t.meta.description}</p>
         </div>
 
-        <nav aria-label="Footer">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-light">Explore</p>
+        <nav aria-label={t.footer.menu}>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-light">{t.footer.explore}</p>
           <ul className="mt-5 space-y-3 text-sm">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="hover:text-ivory">
-                  {link.label}
-                </Link>
+                <LocaleLink href={link.href} className="hover:text-ivory">
+                  {t.nav[link.key]}
+                </LocaleLink>
               </li>
             ))}
           </ul>
         </nav>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-light">Contact</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-light">{t.footer.contact}</p>
           <ul className="mt-5 space-y-3 text-sm">
             <li>
               <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="hover:text-ivory">
-                WhatsApp: {site.phoneDisplay}
+                {t.footer.whatsApp}: {site.phoneDisplay}
               </a>
             </li>
             <li>
@@ -40,10 +43,10 @@ export function Footer() {
                 {site.email}
               </a>
             </li>
-            <li>{site.location}</li>
+            <li>{t.meta.location}</li>
             <li>
               <a href={site.tripadvisorUrl} target="_blank" rel="noopener noreferrer" className="hover:text-ivory">
-                Find us on TripAdvisor
+                {t.footer.findUsOnTripAdvisor}
               </a>
             </li>
           </ul>
@@ -51,9 +54,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-ivory/10">
-        <p className="container-page py-6 text-xs text-ivory/60">
-          © {site.name}. All rights reserved.
-        </p>
+        <p className="container-page py-6 text-xs text-ivory/60">{t.footer.rights(site.name)}</p>
       </div>
     </footer>
   );

@@ -3,31 +3,34 @@ import { BookingForm } from "@/components/booking-form";
 import { MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/icons";
 import { PageHeader, Section } from "@/components/ui";
 import { site } from "@/config/site";
-import { getTours } from "@/lib/content";
+import { pageAlternates } from "@/i18n/config";
+import { getDictionary, getLocale } from "@/i18n/dictionaries";
+import { getTourOptions } from "@/lib/content";
 import { whatsappUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Contact ${site.name} on WhatsApp, phone or email to plan your private tour in Sri Lanka.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [lang, t] = await Promise.all([getLocale(), getDictionary()]);
 
-const contactMethods = [
-  { icon: WhatsAppIcon, label: "WhatsApp", value: site.phoneDisplay, href: whatsappUrl(), external: true },
-  { icon: PhoneIcon, label: "Phone", value: site.phoneDisplay, href: `tel:+${site.whatsappNumber}` },
-  { icon: MailIcon, label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { icon: PinIcon, label: "Where we are", value: site.location },
-];
+  return {
+    title: t.contact.metaTitle,
+    description: t.contact.metaDescription(site.name),
+    alternates: pageAlternates(lang, "/contact"),
+  };
+}
 
 export default async function ContactPage() {
-  const tours = await getTours();
+  const [t, tourOptions] = await Promise.all([getDictionary(), getTourOptions()]);
+
+  const contactMethods = [
+    { icon: WhatsAppIcon, label: t.contact.whatsApp, value: site.phoneDisplay, href: whatsappUrl(), external: true },
+    { icon: PhoneIcon, label: t.contact.phone, value: site.phoneDisplay, href: `tel:+${site.whatsappNumber}` },
+    { icon: MailIcon, label: t.contact.email, value: site.email, href: `mailto:${site.email}` },
+    { icon: PinIcon, label: t.contact.whereWeAre, value: t.meta.location },
+  ];
 
   return (
     <>
-      <PageHeader
-        eyebrow="Contact"
-        title="Let's plan your journey"
-        intro="The quickest way to reach us is WhatsApp. Send a message, or fill in the form and we will continue the conversation there."
-      />
+      <PageHeader eyebrow={t.contact.eyebrow} title={t.contact.title} intro={t.contact.intro} />
       <Section>
         <div className="container-page grid gap-16 lg:grid-cols-[1fr_28rem]">
           <ul className="space-y-4">
@@ -64,9 +67,9 @@ export default async function ContactPage() {
           </ul>
 
           <div className="rounded-3xl border border-line bg-white/70 p-6 md:p-8">
-            <h2 className="text-3xl">Send a request</h2>
-            <p className="mt-2 mb-6 text-sm text-muted">Not sure which tour? Leave it open and we will suggest one.</p>
-            <BookingForm tours={tours.map(({ slug, title }) => ({ slug, title }))} />
+            <h2 className="text-3xl">{t.contact.formTitle}</h2>
+            <p className="mt-2 mb-6 text-sm text-muted">{t.contact.formIntro}</p>
+            <BookingForm tours={tourOptions} labels={t.booking} />
           </div>
         </div>
       </Section>

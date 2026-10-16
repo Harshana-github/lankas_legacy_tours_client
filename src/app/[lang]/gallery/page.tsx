@@ -1,26 +1,29 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { CtaBanner } from "@/components/cta-banner";
 import { ArrowRightIcon } from "@/components/icons";
+import { LocaleLink } from "@/components/locale-link";
 import { PageHeader, Section } from "@/components/ui";
+import { pageAlternates } from "@/i18n/config";
+import { getDictionary, getLocale } from "@/i18n/dictionaries";
 import { getTours } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Gallery",
-  description: "Photos from our private tours around Sri Lanka, shared by our guests.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [lang, t] = await Promise.all([getLocale(), getDictionary()]);
+
+  return {
+    title: t.galleryPage.metaTitle,
+    description: t.galleryPage.metaDescription,
+    alternates: pageAlternates(lang, "/gallery"),
+  };
+}
 
 export default async function GalleryPage() {
-  const tours = await getTours();
+  const [t, tours] = await Promise.all([getDictionary(), getTours()]);
 
   return (
     <>
-      <PageHeader
-        eyebrow="Gallery"
-        title="Moments from the road"
-        intro="Real photos from real tours: our guests, our guides and the places we love to share."
-      />
+      <PageHeader eyebrow={t.galleryPage.eyebrow} title={t.galleryPage.title} intro={t.galleryPage.intro} />
       <Section>
         <div className="container-page space-y-20">
           {tours.map((tour) => (
@@ -29,12 +32,12 @@ export default async function GalleryPage() {
                 <h2 id={`gallery-${tour.slug}`} className="text-3xl md:text-4xl">
                   {tour.title}
                 </h2>
-                <Link
+                <LocaleLink
                   href={`/tours/${tour.slug}`}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-forest"
                 >
-                  View tour <ArrowRightIcon />
-                </Link>
+                  {t.common.viewTour} <ArrowRightIcon />
+                </LocaleLink>
               </div>
               <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
                 {tour.photos.map((photo) => (

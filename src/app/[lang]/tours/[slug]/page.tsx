@@ -1,40 +1,49 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingForm } from "@/components/booking-form";
 import { CheckIcon, ClockIcon, PinIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
-import { TourCard } from "@/components/tour-card";
+import { LocaleLink } from "@/components/locale-link";
+import { TourGrid } from "@/components/tour-grid";
 import { ButtonLink, Section } from "@/components/ui";
 import { site } from "@/config/site";
+import { tourBases } from "@/data/tours";
+import { pageAlternates } from "@/i18n/config";
+import { getDictionary, getLocale } from "@/i18n/dictionaries";
+import { getTour, getTourOptions, getTours } from "@/lib/content";
 import { formatPrice } from "@/lib/format";
-import { getTour, getTours } from "@/lib/content";
 
-export async function generateStaticParams() {
-  const tours = await getTours();
-  return tours.map((tour) => ({ slug: tour.slug }));
+export function generateStaticParams() {
+  return tourBases.map((tour) => ({ slug: tour.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/tours/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[lang]/tours/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const tour = await getTour(slug);
+  const [lang, tour] = await Promise.all([getLocale(), getTour(slug)]);
   if (!tour) return {};
 
   return {
     title: tour.title,
     description: tour.summary,
+    alternates: pageAlternates(lang, `/tours/${tour.slug}`),
     openGraph: { images: [tour.photos[0].src] },
   };
 }
 
-export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
+export default async function TourPage({ params }: PageProps<"/[lang]/tours/[slug]">) {
   const { slug } = await params;
-  const [tour, allTours] = await Promise.all([getTour(slug), getTours()]);
+  const [t, tour, allTours, tourOptions] = await Promise.all([
+    getDictionary(),
+    getTour(slug),
+    getTours(),
+    getTourOptions(),
+  ]);
   if (!tour) notFound();
 
   const [cover, ...morePhotos] = tour.photos;
-  const otherTours = allTours.filter((t) => t.slug !== tour.slug).slice(0, 3);
+  const otherTours = allTours.filter((other) => other.slug !== tour.slug).slice(0, 3);
+  const price = formatPrice(tour.priceFrom, t.tour);
 
   return (
     <>
@@ -55,15 +64,15 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
       {/* Intro: title and cover photo side by side on large screens */}
       <section className="container-page grid items-center gap-10 py-10 md:py-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
-          <nav aria-label="Breadcrumb" className="text-sm text-muted">
-            <Link href="/tours" className="hover:text-ink">
-              Tours
-            </Link>
+          <nav aria-label={t.tour.breadcrumb} className="text-sm text-muted">
+            <LocaleLink href="/tours" className="hover:text-ink">
+              {t.nav.tours}
+            </LocaleLink>
             <span aria-hidden> / </span>
             <span aria-current="page">{tour.title}</span>
           </nav>
 
-          <p className="eyebrow mt-10">Private tour</p>
+          <p className="eyebrow mt-10">{t.tour.privateTour}</p>
           <h1 className="mt-4 text-5xl md:text-6xl">{tour.title}</h1>
           <p className="mt-5 text-lg leading-relaxed text-muted">{tour.summary}</p>
 
@@ -77,8 +86,8 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
           </ul>
 
           <div className="mt-8 flex flex-wrap items-center gap-6">
-            <ButtonLink href="#book">Book this tour</ButtonLink>
-            <span className="font-semibold">{formatPrice(tour.priceFrom)}</span>
+            <ButtonLink href="#book">{t.tour.bookThisTour}</ButtonLink>
+            <span className="font-semibold">{price}</span>
           </div>
         </div>
 
@@ -105,7 +114,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             </div>
 
             <div>
-              <h2 className="text-3xl">Highlights</h2>
+              <h2 className="text-3xl">{t.tour.highlights}</h2>
               <ul className="mt-6 space-y-3">
                 {tour.highlights.map((item) => (
                   <li key={item} className="flex gap-3">
@@ -117,7 +126,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             </div>
 
             <div>
-              <h2 className="text-3xl">The plan</h2>
+              <h2 className="text-3xl">{t.tour.thePlan}</h2>
               <ol className="mt-6 border-l border-line">
                 {tour.itinerary.map((stop) => (
                   <li key={stop.title} className="relative pb-8 pl-8 last:pb-0">
@@ -130,7 +139,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             </div>
 
             <div>
-              <h2 className="text-3xl">Included</h2>
+              <h2 className="text-3xl">{t.tour.included}</h2>
               <ul className="mt-6 grid gap-3 sm:grid-cols-2">
                 {tour.included.map((item) => (
                   <li key={item} className="flex gap-3">
@@ -143,7 +152,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
 
             {morePhotos.length > 0 && (
               <div>
-                <h2 className="text-3xl">Photos</h2>
+                <h2 className="text-3xl">{t.tour.photos}</h2>
                 <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
                   {morePhotos.map((photo) => (
                     <div key={photo.src} className="relative aspect-4/5 overflow-hidden rounded-2xl bg-sand">
@@ -163,14 +172,11 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
 
           <aside id="book" className="lg:sticky lg:top-28 lg:self-start">
             <div className="rounded-3xl border border-line bg-white/70 p-6 md:p-8">
-              <h2 className="text-3xl">Book this tour</h2>
+              <h2 className="text-3xl">{t.tour.bookThisTour}</h2>
               <p className="mt-2 mb-6 text-sm text-muted">
-                {formatPrice(tour.priceFrom)} · final price confirmed on WhatsApp
+                {price} · {t.tour.finalPriceNote}
               </p>
-              <BookingForm
-                tours={allTours.map(({ slug, title }) => ({ slug, title }))}
-                defaultTourSlug={tour.slug}
-              />
+              <BookingForm tours={tourOptions} defaultTourSlug={tour.slug} labels={t.booking} />
             </div>
           </aside>
         </div>
@@ -179,11 +185,9 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
       {/* More tours */}
       <Section className="border-t border-line bg-sand/50">
         <div className="container-page">
-          <h2 className="text-4xl md:text-5xl">You may also like</h2>
-          <div className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {otherTours.map((t) => (
-              <TourCard key={t.slug} tour={t} />
-            ))}
+          <h2 className="text-4xl md:text-5xl">{t.tour.youMayAlsoLike}</h2>
+          <div className="mt-12">
+            <TourGrid tours={otherTours} />
           </div>
         </div>
       </Section>

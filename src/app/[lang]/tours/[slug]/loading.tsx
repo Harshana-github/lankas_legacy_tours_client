@@ -1,9 +1,13 @@
+import { getDictionary } from "@/i18n/dictionaries";
+
 /** Calm placeholder shown instantly while a tour page loads. */
-export default function TourLoading() {
+export default async function TourLoading() {
+  const t = await getDictionary();
+
   return (
     <section
       aria-busy="true"
-      aria-label="Loading tour"
+      aria-label={t.tour.loading}
       className="container-page grid animate-pulse items-center gap-10 py-10 md:py-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16"
     >
       <div className="space-y-5">

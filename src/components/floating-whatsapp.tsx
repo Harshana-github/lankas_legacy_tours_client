@@ -1,21 +1,25 @@
 import { WhatsAppIcon } from "@/components/icons";
+import { getDictionary } from "@/i18n/dictionaries";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 /**
  * Always-visible WhatsApp button in the bottom-right corner.
  * Uses the official WhatsApp green so guests recognise it at a glance.
  */
-export function FloatingWhatsApp() {
+export async function FloatingWhatsApp() {
+  const t = await getDictionary();
+
   return (
     <a
+      // The pre-filled message is always English, because the owner reads it.
       href={whatsappUrl("Hello! I would like to know more about your tours.")}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with us on WhatsApp"
+      aria-label={t.common.chatWithUsAria}
       className="group fixed right-4 bottom-4 z-30 flex items-center gap-3 md:right-6 md:bottom-6"
     >
       <span className="hidden rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-lg shadow-ink/10 sm:block">
-        Chat with us
+        {t.common.chatWithUs}
       </span>
 
       <span className="relative flex size-16 items-center justify-center">
