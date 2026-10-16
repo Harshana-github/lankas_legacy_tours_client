@@ -1,6 +1,6 @@
-# Lanka's Legacy Tours — client website
+# Lanka's Legacy Taxi and Tours — client website
 
-Public website for Lanka's Legacy Tours. Next.js 16 (App Router), TypeScript, Tailwind CSS 4.
+Public website for Lanka's Legacy Taxi and Tours. Next.js 16 (App Router), TypeScript, Tailwind CSS 4.
 
 ```bash
 npm run dev     # http://localhost:3000

@@ -10,9 +10,9 @@ import { navLinks, site } from "@/config/site";
 export function Logo() {
   return (
     <Link href="/" className="flex flex-col leading-none" aria-label={`${site.name} home`}>
-      <span className="font-display text-2xl font-medium tracking-wide">Lanka&apos;s Legacy</span>
-      <span className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gold">
-        Tours · {site.tagline}
+      <span className="font-display text-xl font-medium whitespace-nowrap sm:text-2xl">{site.name}</span>
+      <span className="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gold">
+        {site.tagline}
       </span>
     </Link>
   );

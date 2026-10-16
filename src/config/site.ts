@@ -3,7 +3,7 @@
 // Later these come from the admin panel's "Site settings" via the API.
 
 export const site = {
-  name: "Lanka's Legacy Tours",
+  name: "Lanka's Legacy Taxi and Tours",
   tagline: "Lands of Lore",
   description:
     "Private, guide-led tours of Sri Lanka: ancient cities, misty tea country, waterfalls and wildlife, with your own driver-guide and vehicle.",

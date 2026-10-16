@@ -7,9 +7,9 @@ export function Footer() {
     <footer className="bg-forest text-ivory/80">
       <div className="container-page grid gap-12 py-16 md:grid-cols-3">
         <div>
-          <p className="font-display text-3xl text-ivory">Lanka&apos;s Legacy</p>
-          <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gold-light">
-            Tours · {site.tagline}
+          <p className="font-display text-2xl text-ivory">{site.name}</p>
+          <p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gold-light">
+            {site.tagline}
           </p>
           <p className="mt-6 max-w-xs text-sm leading-relaxed">{site.description}</p>
         </div>
